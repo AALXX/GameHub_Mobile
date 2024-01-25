@@ -1,4 +1,4 @@
-import { StyleSheet, Button } from 'react-native'
+import { StyleSheet, Button, TouchableOpacity } from 'react-native'
 
 import { Text, View } from '../../components/Themed'
 import { Link } from 'expo-router'
@@ -22,9 +22,14 @@ const AccountProfile = () => {
             {userLoggedIn ? (
                 <AccountProfileComp />
             ) : (
-                <Link href="/LoginRegisterModal" asChild>
-                    <Button title="login" />
-                </Link>
+                <View className="flex w-full h-full">
+                    <Text className="mt-8 text-lg self-center">Not logged In</Text>
+                    <Link href="/LoginRegisterModal" asChild className="self-center">
+                        <TouchableOpacity>
+                            <Text className="text-lg">login!</Text>
+                        </TouchableOpacity>
+                    </Link>
+                </View>
             )}
         </View>
     )

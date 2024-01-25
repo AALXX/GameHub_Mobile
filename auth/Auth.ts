@@ -3,11 +3,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const accRegisterFunc = async (userName: string, userEmail: string, password: string, repeatedPassword: string) => {
     if (password !== repeatedPassword) {
-        window.alert("Passwords don't match!")
+        alert("Passwords don't match!")
         return false
     }
 
-    const res = await axios.post(`${process.env.SERVER_BACKEND}/user-account/register-account`, {
+    const res = await axios.post(`${process.env.EXPO_PUBLIC_SERVER_BACKEND}/user-account/register-account`, {
         userName,
         userEmail,
         password
@@ -27,7 +27,6 @@ const accLoginFunc = async (userEmail: string, password: string) => {
         userEmail,
         password
     })
-    alert(res.data.userprivateToken)
     if (!res.data.error && res.data.userprivateToken != null) {
         await AsyncStorage.setItem('userToken', res.data.userprivateToken)
         await AsyncStorage.setItem('userPublicToken', res.data.userpublicToken)
@@ -62,4 +61,20 @@ const isLoggedIn = async () => {
     }
 }
 
-export { accRegisterFunc, accLoginFunc, accLogout, isLoggedIn }
+const deleteAccount = async (sure: boolean, UserPrivateToken: string) => {
+    if (!sure) {
+        window.alert('CheckBox Not Checked')
+        return false
+    }
+
+    const res = await axios.post(`${process.env.EXPO_PUBLIC_SERVER_BACKEND}/user-account/delete-user-account/`, { userToken: UserPrivateToken })
+    if (res.data.error) {
+        window.alert('error')
+        return false
+    }
+
+    return true
+}
+
+
+export { accRegisterFunc, accLoginFunc, accLogout, isLoggedIn, deleteAccount }

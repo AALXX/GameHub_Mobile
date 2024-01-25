@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { TouchableOpacity, StyleSheet, TextInput, Text } from 'react-native'
+import { TouchableOpacity, TextInput, Text } from 'react-native'
 import { View } from '../components/Themed'
-import { accLoginFunc } from '../auth/Auth'
+import { accLoginFunc, accRegisterFunc } from '../auth/Auth'
+import { router } from 'expo-router'
 
 const LoginRegisterModal = () => {
     const [registerForm, setRegisterForm] = useState(false)
@@ -19,14 +20,21 @@ const LoginRegisterModal = () => {
     const LogInFunc = async () => {
         const succesfullLogin = await accLoginFunc(loginEmail, loginPassword)
         if (succesfullLogin) {
-            // router.push('/account')
+            router.replace('/AccountProfile')
+        }
+    }
+
+    const RegisterAcc = async () => {
+        const succesfullRegister = await accRegisterFunc(registerUserName, registerEmail, registerPassword, registerRepetedPassword)
+        if (succesfullRegister) {
+            router.replace('/AccountProfile')
         }
     }
 
     return (
-        <View style={styles.container}>
+        <View className="flex h-full w-full ">
             {!registerForm ? (
-                <View className="flex flex-col w-[90%] h-[50%] mt-[20vh] self-center bg-[#2b2b2b] items-center">
+                <View className="flex flex-col w-[90%] h-[50%] mt-[10vh] self-center bg-[#2b2b2b] items-center">
                     <View className="flex mt-[20%] w-[80%] bg-[#2b2b2b] h-[10vh]">
                         <Text className="text-white">Email</Text>
                         <TextInput className="text-white bg-[#3b3b3b] h-[6vh] mt-[2%] indent-3" placeholder="Email..." value={loginEmail} onChangeText={text => setLoginEmail(text)} />
@@ -48,14 +56,14 @@ const LoginRegisterModal = () => {
                     </TouchableOpacity>
                 </View>
             ) : (
-                <View className="flex flex-col w-[90%] h-[70%] mt-[10vh] self-center bg-[#2b2b2b] items-center">
-                    <View className="flex mt-[2vh] w-[80%] bg-[#2b2b2b] h-[10vh]">
+                <View className="flex flex-col w-[90%] h-[70%] mt-[5vh] self-center bg-[#2b2b2b] items-center">
+                    <View className="flex mt-[4vh] w-[80%] bg-[#2b2b2b] h-[10vh]">
                         <Text className="text-white">UserName</Text>
                         <TextInput className="text-white bg-[#3b3b3b] h-[6vh] mt-[2%] indent-3" placeholder="Email..." value={registerUserName} onChangeText={text => setRegisterUserName(text)} />
                     </View>
                     <View className="flex mt-[2vh] w-[80%] bg-[#2b2b2b] h-[10vh]">
                         <Text className="text-white">Email</Text>
-                        <TextInput className="text-white bg-[#3b3b3b] h-[6vh] mt-[2%] indent-3" secureTextEntry={true} placeholder="Email..." value={registerEmail} onChangeText={text => setRegisterEmail(text)} />
+                        <TextInput className="text-white bg-[#3b3b3b] h-[6vh] mt-[2%] indent-3" placeholder="Email..." value={registerEmail} onChangeText={text => setRegisterEmail(text)} />
                     </View>
                     <View className="flex mt-[2vh] w-[80%] bg-[#2b2b2b] h-[10vh]">
                         <Text className="text-white">Password</Text>
@@ -77,7 +85,7 @@ const LoginRegisterModal = () => {
                             onChangeText={text => setRegisterRepeatedPassword(text)}
                         />
                     </View>
-                    <TouchableOpacity className="mt-[5vh]" onPress={() => LogInFunc()}>
+                    <TouchableOpacity className="mt-[3vh]" onPress={() => RegisterAcc()}>
                         <Text className="text-white text-lg">Register Account</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -95,10 +103,3 @@ const LoginRegisterModal = () => {
 }
 
 export default LoginRegisterModal
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    }
-})

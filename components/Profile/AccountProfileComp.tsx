@@ -1,12 +1,15 @@
 import { Text, View } from '../Themed'
 
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import AccountVideoTemplate, { IVideoTemplateProps } from './AccountVideoTemplate'
 import ProfileCards from './utils/ProfileCards'
+import AboutChanelTab from './AboutChanelTab'
+import { useRouter } from 'expo-router'
+import AccountLivetemplate from './AccountLivetemplate'
 
 interface IUserDataProps {
     UserName: string
@@ -25,14 +28,13 @@ interface ILiveDataProps {
 
 const AccountProfile = () => {
     const [userPublicToken, setUserPublicToken] = useState<string>('')
+    const router = useRouter()
+    const [refreshing, setRefreshing] = useState(false)
 
     const [userData, setUserData] = useState<IUserDataProps>({ UserName: '', UserDescription: '', UserEmail: '', AccountFolowers: '' })
     const [liveData, setLiveData] = useState<ILiveDataProps | null>(null)
     const [hasVideos, setHasVideos] = useState<boolean>(false)
     const [videosData, setVideosData] = useState<Array<IVideoTemplateProps>>([])
-
-    const [ToggledSettingsPopUp, setToggledSettingsPopUp] = useState(false)
-    const [ToggledIconChangePopUp, setToggledIconChangePopUp] = useState(false)
 
     const [isAccIconHovered, setIsAccIconHovered] = useState(false)
     const [componentToShow, setComponentToShow] = useState<string>('LandingPage')
@@ -77,14 +79,37 @@ const AccountProfile = () => {
         })()
     }, [])
 
+    const handleRefresh = async () => {
+        setRefreshing(true)
+        const profileData = await getProfileData(await AsyncStorage.getItem('userToken'))
+        setUserData(profileData.userData)
+        setLiveData(profileData.liveData)
+        setRefreshing(false)
+    }
+
+    const handleScroll = async (event: any) => {
+        // Check if the user has scrolled to the top
+        const offsetY = event.nativeEvent.contentOffset.y
+        if (offsetY <= 0) {
+            // User has scrolled to the top, trigger the refresh
+            await handleRefresh()
+        }
+    }
+
     switch (componentToShow) {
         case 'LandingPage':
             component = (
-                <View className="grid xl:grid-cols-6 lg:grid-cols-5 gap-4 mt-[2vh]">
+                <View className="flex  w-full  h-full">
                     {liveData == null ? null : (
                         <View>
-                            <Text>Landing</Text>
-                            {/* <AccountLivetemplate StreamTitle={liveData.StreamTitle} Likes={liveData.Likes} Dislikes={liveData.Dislikes} StreamToken={liveData.StreamToken} StartedAt={liveData.StartedAt} /> */}
+                            <AccountLivetemplate
+                                StreamTitle={liveData.StreamTitle}
+                                Likes={liveData.Likes}
+                                Dislikes={liveData.Dislikes}
+                                StreamToken={liveData.StreamToken}
+                                StartedAt={liveData.StartedAt}
+                                UserPublicToken={userPublicToken}
+                            />
                         </View>
                     )}
                 </View>
@@ -107,7 +132,7 @@ const AccountProfile = () => {
 
             break
         case 'About':
-            // component = <AboutChanelTab userDescription={userData.UserDescription} />
+            component = <AboutChanelTab userDescription={userData.UserDescription} />
             break
 
         default:
@@ -115,11 +140,28 @@ const AccountProfile = () => {
     }
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView
+            style={styles.container}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={async () => {
+                        await handleRefresh()
+                    }}
+                />
+            }
+        >
             <Image source={`${process.env.EXPO_PUBLIC_FILE_SERVER}/${userPublicToken}/Main_Icon.png`} placeholder="acountImage" className="self-center mt-[5vh]" style={{ width: 80, height: 80, borderRadius: 50 }} />
             <View className="flex flex-row justify-center mt-[2vh]">
                 <Text className="self-center text-lg">{userData.UserName}</Text>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        router.push({
+                            pathname: '/AccountSettings',
+                            params: { UserName: userData.UserName, UserEmail: userData.UserEmail, UserVisibility: 'public', UserDescription: userData.UserDescription, UserPublicToken: userPublicToken }
+                        })
+                    }}
+                >
                     <Image source={require('../../assets/AccountIcons/Settings_icon.svg')} className="ml-1 w-6 h-6 self-center" alt="SettingIcon" />
                 </TouchableOpacity>
             </View>

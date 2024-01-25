@@ -50,7 +50,8 @@ function RootLayoutNav() {
             <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-                <Stack.Screen name="LoginRegisterModal" options={{ presentation: 'modal' }} />
+                <Stack.Screen name="LoginRegisterModal" options={{ presentation: 'modal', orientation:'all', title:'Login/Register'}} />
+                <Stack.Screen name="AccountSettings" options={{ presentation: 'modal' }} />
                 <Stack.Screen name="watch/[VideoToken]" options={{ presentation: 'card', orientation: 'landscape_left' }} />
             </Stack>
         </ThemeProvider>
