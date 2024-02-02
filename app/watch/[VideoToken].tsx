@@ -1,21 +1,47 @@
-import { StyleSheet } from 'react-native'
-import { Text, View } from '../../components/Themed'
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native'
+import { View } from '../../components/Themed'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams } from 'expo-router'
-import { Video } from 'expo-av'
+import VideoPlayer from '../../components/VideoPlayer/VideoPlayer'
+import FullScreenVideoPlayer from '../../components/VideoPlayer/FullScreenVideoPlayer'
+import CommenView from '../../components/VideoPlayer/CommentSection/CommentView'
 
 const WatchVideoScreen = () => {
-    const { VideoToken } = useLocalSearchParams()
+    const { VideoToken }: { VideoToken: string } = useLocalSearchParams()
+    const [refreshing, setRefreshing] = useState<boolean>(false)
+    const [refreshKey, setRefreshKey] = useState<number>(0)
+    const [fullScreen, setFullScreen] = useState<boolean>(false)
+
+    const handleRefresh = async () => {
+        setRefreshing(true)
+        // Update the key to force a re-render of the VideoPlayer component
+        setRefreshKey(prevKey => prevKey + 1)
+        setRefreshing(false)
+    }
+
     return (
         <View style={styles.container}>
-            <Video
-                source={{ uri: `${process.env.EXPO_PUBLIC_VIDEO_SERVER_BACKEND}/video-manager/video-stream/${VideoToken}` }}
-                className="w-full h-[26vh]"
-                useNativeControls // Enable built-in player controls
-                isLooping // Loop the video
-            />
-            <View className="w-full h-[10vh] bg-[#272727]"></View>
+            <ScrollView
+                className=" w-full h-full flex"
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={async () => {
+                            await handleRefresh()
+                        }}
+                    />
+                }
+            >
+                {fullScreen ? (
+                    <FullScreenVideoPlayer key={refreshKey} VideoToken={VideoToken} setFullScreen={setFullScreen} />
+                ) : (
+                    <View>
+                        <VideoPlayer key={refreshKey} VideoToken={VideoToken} setFullScreen={setFullScreen} />
+                        <CommenView VideoToken={VideoToken} />
+                    </View>
+                )}
+            </ScrollView>
         </View>
     )
 }

@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font'
 import { SplashScreen, Stack } from 'expo-router'
 import { useEffect } from 'react'
 import { useColorScheme } from 'react-native'
+import NavBar from './NavBar'
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -48,11 +49,34 @@ function RootLayoutNav() {
     return (
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                    name="(tabs)"
+                    options={{
+                        headerShown: false
+                    }}
+                />
                 <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-                <Stack.Screen name="LoginRegisterModal" options={{ presentation: 'modal', orientation:'all', title:'Login/Register'}} />
-                <Stack.Screen name="AccountSettings" options={{ presentation: 'modal' }} />
-                <Stack.Screen name="watch/[VideoToken]" options={{ presentation: 'card', orientation: 'landscape_left' }} />
+                <Stack.Screen name="LoginRegisterModal" options={{ presentation: 'modal', orientation: 'all', title: 'Login/Register' }} />
+                <Stack.Screen
+                    name="AccountSettings"
+                    options={{
+                        presentation: 'modal'
+                    }}
+                />
+                <Stack.Screen
+                    name="watch/[VideoToken]"
+                    options={{
+                        title: '',
+                        presentation: 'card'
+                    }}
+                />
+                <Stack.Screen
+                    name="VideoComments/[VideoToken]"
+                    options={{
+                        title: '',
+                        presentation: 'modal'
+                    }}
+                />
             </Stack>
         </ThemeProvider>
     )

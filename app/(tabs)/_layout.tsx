@@ -4,6 +4,7 @@ import { Pressable, useColorScheme } from 'react-native'
 import { Image } from 'expo-image'
 
 import Colors from '../../constants/Colors'
+import NavBar from '../NavBar'
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -24,20 +25,21 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: 'Tab One',
+                    title: '',
                     tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-                    headerRight: () => (
-                        <Link href="/modal" asChild>
-                            <Pressable>{({ pressed }) => <FontAwesome name="info-circle" size={25} color={Colors[colorScheme ?? 'light'].text} style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />}</Pressable>
-                        </Link>
-                    )
+                    header: () => {
+                        return <NavBar title="Tab One" />
+                    }
                 }}
             />
             <Tabs.Screen
                 name="two"
                 options={{
-                    title: 'Tab Two',
-                    tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />
+                    title: '',
+                    tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+                    header: () => {
+                        return <NavBar title="Tab Two" />
+                    }
                 }}
             />
 
@@ -52,7 +54,11 @@ export default function TabLayout() {
                             className="mt-10"
                             style={{ width: 50, height: 50, borderRadius: 25 }}
                         />
-                    )
+                    ),
+                    header: () => {
+                        return <NavBar title="" />
+                    },
+                    
                 }}
             />
         </Tabs>

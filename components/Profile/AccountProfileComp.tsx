@@ -84,16 +84,12 @@ const AccountProfile = () => {
         const profileData = await getProfileData(await AsyncStorage.getItem('userToken'))
         setUserData(profileData.userData)
         setLiveData(profileData.liveData)
-        setRefreshing(false)
-    }
-
-    const handleScroll = async (event: any) => {
-        // Check if the user has scrolled to the top
-        const offsetY = event.nativeEvent.contentOffset.y
-        if (offsetY <= 0) {
-            // User has scrolled to the top, trigger the refresh
-            await handleRefresh()
+        const profileVideos = await getProfileVideos(await AsyncStorage.getItem('userToken'))
+        if (Object.keys(profileVideos).length !== 0) {
+            setHasVideos(true)
+            setVideosData(profileVideos)
         }
+        setRefreshing(false)
     }
 
     switch (componentToShow) {
