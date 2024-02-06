@@ -67,7 +67,10 @@ function RootLayoutNav() {
                     name="watch/[VideoToken]"
                     options={{
                         title: '',
-                        presentation: 'card'
+                        presentation: 'card',
+                        header: () => {
+                            return <NavBar title="Tab Two" />
+                        }
                     }}
                 />
                 <Stack.Screen
