@@ -33,10 +33,10 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="two"
+                name="AddPost"
                 options={{
                     title: '',
-                    tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+                    tabBarIcon: ({ color }) => <Image source={require('../../assets/AddPost.svg')} placeholder="acountImage" className="mt-10" style={{ width: 40, height: 40 }} />,
                     header: () => {
                         return <NavBar title="Tab Two" />
                     }
@@ -57,8 +57,7 @@ export default function TabLayout() {
                     ),
                     header: () => {
                         return <NavBar title="" />
-                    },
-                    
+                    }
                 }}
             />
         </Tabs>

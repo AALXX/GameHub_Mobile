@@ -58,7 +58,7 @@ const AccountSettings = (props: IAccoutSettingsPopupProps) => {
     }
 
     const changePassword = () => {
-        axios.post(`${process.env.SERVER_BACKEND}/user-account-manager/change-user-password-check-link`, { userEmail: props.UserEmail }).then(res => {
+        axios.post(`${process.env.EXPO_PUBLIC_SERVER_BACKEND}/user-account-manager/change-user-password-check-link`, { userEmail: props.UserEmail }).then(res => {
             if (res.data.error) {
                 window.alert('error')
             }
